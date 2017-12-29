@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gorilla/websocket"
 )
@@ -111,16 +112,16 @@ func (r *room) listen() {
 func getSockUrl() string {
 	data, err := ioutil.ReadFile(".sockUrl")
 	if err != nil {
-		log.Fatal("ReadFile:", err)
+		log.Printf("ReadFile: %v", err)
 	}
-	return string(data)
+	return strings.TrimSpace(string(data))
 }
 
 // 各clientからのwss://のconnection要求に対して1度だけ発火
 func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	socket, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
-		log.Fatal("ServeHTTP:", err)
+		log.Printf("ServeHTTP: %v", err)
 		return
 	}
 	client := &client{
