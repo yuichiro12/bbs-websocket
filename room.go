@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/gorilla/websocket"
@@ -110,7 +111,11 @@ func (r *room) listen() {
 }
 
 func getSockUrl() string {
-	data, err := ioutil.ReadFile(".sockUrl")
+	abs_path, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
+	}
+	data, err := ioutil.ReadFile(abs_path + "/.sockUrl")
 	if err != nil {
 		log.Printf("ReadFile: %v", err)
 	}
